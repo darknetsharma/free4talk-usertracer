@@ -1,0 +1,40 @@
+version: "3.2"
+services:
+  php:
+    build: 
+      context: .
+    image: darknetsharma/fft-usertracer-moe-php-mysql-demo:latest
+    networks:
+      - frontend
+      - backend
+    environment:
+      - MYSQL_HOST=moe-mysql-app
+    volumes:
+      - ./www/:/var/www/html/
+    ports:
+      - "30002:80"
+    container_name: moe-php-app
+  mysql:
+    image: darknetsharma/fft-usertracer-mysql-5.7:latest
+    networks:
+      - backend
+    environment:
+      - MYSQL_ROOT_PASSWORD=N0tguessable@123
+    container_name: moe-mysql-app
+  phpmyadmin:
+    image: darknetsharma/fft-usertracer-phpmyadmin:latest
+    depends_on:
+      - mysql
+    networks:
+      - backend
+    ports:
+      - "30003:80"
+    environment:
+      - PMA_HOST=moe-mysql-app
+      - PMA_PORT= 3306
+    volumes:
+      - /sessions
+    container_name: moe-phpmyadmin-app
+networks:
+  frontend:
+  backend:
